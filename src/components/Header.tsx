@@ -38,7 +38,7 @@ function Header() {
           </div>
           <div className="flex w-full max-w-sm items-center space-x-2">
             <Input type="text" placeholder="Search any product" />
-            <Button type="button" >Search</Button>
+            <Button type="button">Search</Button>
           </div>
         </div>
       </nav>

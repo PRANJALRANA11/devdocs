@@ -1,7 +1,7 @@
 import Products from "@/components/Products";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-export async function getData({searchedProduct}) {
+export async function getData() {
   interface Options {
     url: string;
     params: {
@@ -17,7 +17,7 @@ export async function getData({searchedProduct}) {
       "x-rapidapi-host": string;
     };
   }
-  let query = searchedProduct ||"Phone";
+  let query = "Phone";
   const options: Options = {
     url: "https://real-time-amazon-data.p.rapidapi.com/search",
     params: {
