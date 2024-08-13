@@ -29,7 +29,7 @@ export async function getData() {
       is_prime: "false",
     },
     headers: {
-      "x-rapidapi-key": "f5a38a9cd0mshfa3154c6efaa96dp1d8e85jsn0312c0e646e9",
+      "x-rapidapi-key": "a9b25c9aa1msh7f57bcdc19a2703p103129jsn",
       "x-rapidapi-host": "real-time-amazon-data.p.rapidapi.com",
     },
   };
