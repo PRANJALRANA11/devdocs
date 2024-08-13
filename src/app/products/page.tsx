@@ -29,7 +29,7 @@ export async function getData() {
       is_prime: "false",
     },
     headers: {
-      "x-rapidapi-key": "a9b25c9aa1msh7f57bcdc19a2703p103129jsn",
+      "x-rapidapi-key": "10b8a93400msh7b87e57da8bb34ap1bf674jsn81b3673f6b0d",
       "x-rapidapi-host": "real-time-amazon-data.p.rapidapi.com",
     },
   };
@@ -47,8 +47,14 @@ export async function getData() {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
+
     const data = await res.json();
     console.log("API response:", data);
+    data.data.products.forEach((product) => {
+      console.log("Product Price:", product.product_price);
+      if(product.product_price!=null)  product.product_price = parseFloat(product.product_price.replace(/[$,]/g, ''));
+      else product.product_price = 200;
+    });
     return data.data.products;
   } catch (error) {
     console.error("Error while getting products:", error);

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,9 +29,7 @@ interface Product {
   quantity: number;
 }
 
-interface CartState {
-  products: Product[];
-}
+
 
 interface RootState {
   cart: CartState;
@@ -39,31 +37,47 @@ interface RootState {
 
 function Products({ data }: { data: Product[] }) {
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.cart);
+  const cart = useSelector((state: RootState): Array<object> => state.cart);
 
   // State to track clicked products' asin
   const [clickedProducts, setClickedProducts] = useState<string[]>([]);
 
+  useEffect(() => {
+    cart.forEach((item) => {
+      setClickedProducts((prevClickedProducts) =>
+        prevClickedProducts.includes(item.asin)
+          ? prevClickedProducts
+          : [...prevClickedProducts, item.asin]
+      );
+    })
+  },[]);
+
   const addItem = (product: Product) => {
+    // Dispatch the action to add the product to the cart
     dispatch(addToCart(product));
 
-    // Add the clicked product's asin to the array if it's not already there
+    // Directly add the product's asin to clickedProducts if it's not already there
     setClickedProducts((prevClickedProducts) =>
       prevClickedProducts.includes(product.asin)
         ? prevClickedProducts
         : [...prevClickedProducts, product.asin]
     );
-    console.log(cart)
+  // You can log the updated cart state after the dispatch
+    console.log("Updated Cart:", cart[0].asin);
   };
 
   const removeItem = (product: Product) => {
-    dispatch(removeFromCart(product.asin));
-    // Remove the clicked product's asin from the array
+    // Dispatch the action to remove the product from the cart
+    dispatch(removeFromCart({asin:product.asin, remove:true}));
+
+    // Remove the product's asin from clickedProducts
     setClickedProducts((prevClickedProducts) =>
       prevClickedProducts.filter((asin) => asin !== product.asin)
     );
-    console.log(cart)
-  }
+
+    // Log the updated cart state after the dispatch
+    console.log("Updated Cart:", cart);
+  };
 
   return (
     <div className="grid grid-cols-4 gap-3 pl-20 py-20">
@@ -85,7 +99,7 @@ function Products({ data }: { data: Product[] }) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p>{product.product_price}</p>
+              <p>$ {product.product_price}</p>
             </CardContent>
             <CardFooter>
               {/* <Button

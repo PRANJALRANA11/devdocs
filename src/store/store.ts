@@ -1,12 +1,16 @@
-import {configureStore} from '@reduxjs/toolkit';
-import cartSlice from '@/store/services/cartProductSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import cartSlice from "@/store/services/cartProductSlice";
 
-const store = configureStore({
+const store = () => {
+  return configureStore({
     reducer: {
-        cart : cartSlice,
-        //TODO: add more slices here for posts
-    }
-});
+      cart: cartSlice,
+    },
+  });
+};
 
-
+export type AppStore = ReturnType<typeof store>;
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
 export default store;
