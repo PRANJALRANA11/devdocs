@@ -5,7 +5,7 @@ let initialState: Array<object> = [];
 
 if (typeof window !== "undefined" && localStorage.getItem("cart")) {
   initialState = JSON.parse(localStorage.getItem("cart") ?? "[]");
-}
+} 
 
 const cartSlice = createSlice({
   name: "cart",
