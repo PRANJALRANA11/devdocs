@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import Footer from "@/components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "@/store/services/cartProductSlice";
+import { useToast } from "@/components/ui/use-toast"
+
 
 interface Product {
   asin: string;
@@ -28,40 +30,84 @@ function page() {
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [discountPercentageToNumber, setDiscountPercentageToNumber] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [applyDiscount, setApplyDiscount] = useState(false);
+  const { toast } = useToast();
   useEffect(() => {
     setCart(cartState); // Make sure cart is updated with cartState
   
-    const calculateOriginalPrice = () => {
+    const calculatePrice = () => {
       let totalPrice = 0;
       cartState.forEach((product) => {
         totalPrice += product.product_price; // Sum the price of all products
       });
       setOriginalPrice(totalPrice.toFixed(2)); // Set the total original price with two decimal places
+      setTotalPrice(totalPrice.toFixed(2)); // Set the total original price with two decimal places
+      if (totalPrice == 0) setDiscountPercentageToNumber(0); 
     };
-    const handleDiscountChange = () => {
-      setDiscountPercentageToNumber(OriginalPrice * discountPercentage / 100);
-      setTotalPrice(OriginalPrice - discountPercentageToNumber);
-  }
-  
-    calculateOriginalPrice();
-    handleDiscountChange();
-  }, [cartState,applyDiscount]);
+    
+    calculatePrice();
+  }, [cartState]);
   const dispatch = useDispatch();
   // console.log(cart);
-  const addItem = (product: Product) => {
+  const addItem = (product: Product,event) => {
     // Dispatch the action to add the product to the cart
     dispatch(addToCart(product));
+    handleDiscountChange(event);
   };
 
-  const removeOneItem = (product: Product) => {
+  const removeOneItem = (product: Product,event) => {
     // Dispatch the action to remove the product from the cart
     dispatch(removeFromCart({asin:product.asin,remove:false}));
+    handleDiscountChange(event);
   };
-  const removeItem = (product: Product) => {
+  const removeItem = (product: Product,event) => {
     // Dispatch the action to remove the product from the cart
     dispatch(removeFromCart({asin:product.asin,remove:true}));
+    handleDiscountChange(event);
   };
+  const handleDiscountChange = (event) => {
+    
+    if (event) event.preventDefault();
+    if(event){
+    if (discountPercentage == 0) {
+      toast({
+        variant: "destructive",
+        title: "Discount percentage is required",
+        description: "Please enter a discount percentage",
+      });
+      return;
+    }
+    if (discountPercentage < 0){
+      toast({
+        variant: "destructive",
+        title: "Discount percentage is invalid",
+        description: "Please enter a valid discount percentage",
+      });
+      return
+    }
+      if (discountPercentage > 40) {
+      toast({
+        variant: "destructive",
+        title: "Discount percentage is invalid",
+        description: "Please enter a discount percentage less than 40",
+      });
+      return;
+    }
+    if(OriginalPrice == 0){
+      toast({
+        variant: "destructive",
+        title: "Cart is empty",
+        description: "Please add items to cart",
+      });
+      return;
+    }
+  }
+    console.log(OriginalPrice)
+    setDiscountPercentageToNumber(parseFloat((OriginalPrice * discountPercentage / 100).toFixed(2)));
+    let total_price = OriginalPrice-(OriginalPrice * discountPercentage / 100)
+    setTotalPrice(parseFloat(total_price).toFixed(2));
+}
+
+
  
   return (
     <div>
@@ -229,99 +275,7 @@ function page() {
                      ))}
                
               </div>
-              <div className="hidden xl:mt-8 xl:block">
-                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                  People also bought
-                </h3>
-                <div className="mt-6 grid grid-cols-3 gap-4 sm:mt-8">
-                  <Card className="space-y-6 overflow-hidden rounded-lg border border-gray-200  p-6 shadow-sm">
-                    <a href="#" className="overflow-hidden rounded">
-                      <Image
-                        width={44}
-                        height={44}
-                        className="mx-auto h-44 w-44"
-                        src="https://m.media-amazon.com/images/I/61bMNCeAUAL._AC_UL960_FMwebp_QL65_.jpg"
-                        alt="imac image"
-                      />
-                    </a>
-                    <div>
-                      <a
-                        href="#"
-                        className="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white"
-                      >
-                        Apple Watch Series 8
-                      </a>
-                      <p className="mt-2 text-base font-normal text-gray-500 dark:text-gray-400">
-                        This generation has some improvements, including a
-                        longer continuous battery life.
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-lg font-bold text-gray-900 dark:text-white">
-                        <span className="line-through"> $1799,99 </span>
-                      </p>
-                      <p className="text-lg font-bold leading-tight text-red-600 dark:text-red-500">
-                        $1199
-                      </p>
-                    </div>
-                    <div className="mt-6 flex items-center gap-2.5">
-                      <button
-                        data-tooltip-target="favourites-tooltip-3"
-                        type="button"
-                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white p-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                      >
-                        <svg
-                          className="h-5 w-5"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 6C6.5 1 1 8 5.8 13l6.2 7 6.2-7C23 8 17.5 1 12 6Z"
-                          ></path>
-                        </svg>
-                      </button>
-                      <div
-                        id="favourites-tooltip-3"
-                        role="tooltip"
-                        className="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                      >
-                        Add to favourites
-                        <div className="tooltip-arrow" data-popper-arrow></div>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="inline-flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium  text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                      >
-                        <svg
-                          className="-ms-2 me-2 h-5 w-5"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7h-1M8 7h-.688M13 5v4m-2-2h4"
-                          />
-                        </svg>
-                        Add to cart
-                      </button>
-                    </div>
-                  </Card>
-                </div>
-              </div>
+              
             </div>
 
             <div className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full">
@@ -364,7 +318,12 @@ function page() {
                   </dl>
                 </div>
 
-                <Button className="ml-14">Proceed to Checkout</Button>
+                <Button className="ml-14"   onClick={() => {
+        toast({
+          title: "Checkout has been successful",
+          description: "Your order has been placed successfully",
+        })
+      }}>Proceed to Checkout</Button>
 
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -372,7 +331,7 @@ function page() {
                     or{" "}
                   </span>
                   <a
-                    href="#"
+                    href="/products"
                     title=""
                     className="inline-flex items-center gap-2 text-sm font-medium text-primary-700 underline hover:no-underline dark:text-primary-500"
                   >
@@ -406,9 +365,9 @@ function page() {
                       {" "}
                       Do you have a voucher or gift card?{" "}
                     </label>
-                    <Input type="number" placeholder="Enter your discount percent" value={setDiscountPercentage} required   onChange={discountPercentage}/>
+                    <Input type="number" placeholder="Enter your discount percent" value={discountPercentage} required   onChange={(e) => setDiscountPercentage(e.target.value)}/>
                   </div>
-                  <Button onClick={()=> setApplyDiscount(prev=>!prev)} >Apply Code</Button>
+                  <Button onClick={handleDiscountChange} >Apply Code</Button>
                 </form>
               </Card>
             </div>
