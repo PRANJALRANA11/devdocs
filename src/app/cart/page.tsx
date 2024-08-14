@@ -25,15 +25,28 @@ function page() {
   const cartState = useSelector((state: RootState): Array<object> => state.cart);
   const [cart, setCart] = useState([]);
   const [OriginalPrice, setOriginalPrice] = useState(0);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [discountPercentageToNumber, setDiscountPercentageToNumber] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [applyDiscount, setApplyDiscount] = useState(false);
   useEffect(() => {
-    setCart(cartState);
+    setCart(cartState); // Make sure cart is updated with cartState
+  
     const calculateOriginalPrice = () => {
-      cart.forEach((product) => {
-        setOriginalPrice( product.product_price); 
+      let totalPrice = 0;
+      cartState.forEach((product) => {
+        totalPrice += product.product_price; // Sum the price of all products
       });
-    } 
+      setOriginalPrice(totalPrice.toFixed(2)); // Set the total original price with two decimal places
+    };
+    const handleDiscountChange = () => {
+      setDiscountPercentageToNumber(OriginalPrice * discountPercentage / 100);
+      setTotalPrice(OriginalPrice - discountPercentageToNumber);
+  }
+  
     calculateOriginalPrice();
-  },[cartState]);
+    handleDiscountChange();
+  }, [cartState,applyDiscount]);
   const dispatch = useDispatch();
   // console.log(cart);
   const addItem = (product: Product) => {
@@ -333,7 +346,7 @@ function page() {
                         discount
                       </dt>
                       <dd className="text-base font-medium text-green-600">
-                        -$299.00
+                        $ {discountPercentageToNumber }
                       </dd>
                     </dl>
 
@@ -346,7 +359,7 @@ function page() {
                       Total
                     </dt>
                     <dd className="text-base font-bold text-gray-900 dark:text-white">
-                      $8,191.00
+                      $ {totalPrice}
                     </dd>
                   </dl>
                 </div>
@@ -393,9 +406,9 @@ function page() {
                       {" "}
                       Do you have a voucher or gift card?{" "}
                     </label>
-                    <Input type="text" placeholder="ds" required />
+                    <Input type="number" placeholder="Enter your discount percent" value={setDiscountPercentage} required   onChange={discountPercentage}/>
                   </div>
-                  <Button type="submit">Apply Code</Button>
+                  <Button onClick={()=> setApplyDiscount(prev=>!prev)} >Apply Code</Button>
                 </form>
               </Card>
             </div>

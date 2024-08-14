@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { parse } from "path";
 
 // Initialize state with localStorage if available
 let initialState: Array<object> = [];
@@ -18,8 +19,11 @@ const cartSlice = createSlice({
       );
 
       if (existingProduct) {
+        let unitPrice = existingProduct.product_price 
+        if(existingProduct.quantity > 1)    unitPrice = existingProduct.product_price / (existingProduct.quantity);
         existingProduct.quantity += 1; // Increment the quantity if the product is already in the cart
-        existingProduct.product_price += product.product_price; // Increment the price
+  
+        existingProduct.product_price =parseFloat((existingProduct.product_price + unitPrice).toFixed(2));// Increment the price
       } else {
         state.push({ ...product, quantity: 1 }); // Add the new product with a quantity of 1
       }
@@ -39,7 +43,10 @@ const cartSlice = createSlice({
           
           // Adjust the price by recalculating based on the unit price
           const unitPrice = existingProduct.product_price / (existingProduct.quantity + 1);
-          existingProduct.product_price = unitPrice * existingProduct.quantity;
+          // console.log(unitPrice)
+          // console.log(existingProduct.product_price)
+          existingProduct.product_price = parseFloat((existingProduct.product_price -  unitPrice ).toFixed(2));
+          // console.log(existingProduct.product_price)  
     
           // Update localStorage after state is modified
           localStorage.setItem("cart", JSON.stringify(state));
