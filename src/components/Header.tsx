@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Toggle } from "@/components/ui/toggle";
+import {RegisterLink, LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
 
 function Header() {
   return (
@@ -87,6 +88,9 @@ function Header() {
             </ul>
           </div>
         </div>
+        <LoginLink>Sign in</LoginLink>
+
+<RegisterLink>Sign up</RegisterLink>
       </nav>
     </div>
   );
