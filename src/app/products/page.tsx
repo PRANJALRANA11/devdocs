@@ -1,6 +1,8 @@
 import Header from "@/components/pages/Header";
 import Footer from "@/components/pages/Footer";
 import Products from "@/components/pages/Products";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import {redirect} from "next/navigation";
 
 
 // Moved sensitive keys to environment variables for security
@@ -77,6 +79,9 @@ async function getData(query: string = "Phone") {
 
 async function Page() {
   const data = await getData();
+  const { isAuthenticated } = getKindeServerSession();
+
+  if(!(await isAuthenticated())) redirect("/api/auth/login");
 
   return (
     <>

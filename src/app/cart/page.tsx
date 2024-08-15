@@ -10,7 +10,8 @@ import Footer from "@/components/pages/Footer";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/hook";
 import { addToCart, removeFromCart } from "@/store/services/cartProductSlice";
 import { useToast } from "@/components/ui/use-toast";
-
+import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
+import {redirect} from "next/navigation";
 interface Product {
   asin: string;
   product_photo: string;
@@ -20,6 +21,9 @@ interface Product {
 }
 
 function page() {
+  const { isAuthenticated } = useKindeBrowserClient();
+
+  if( !isAuthenticated) redirect("/api/auth/login");
   const dispatch = useAppDispatch();
   const cartState = useAppSelector(
     (state): Array<Product> => state.cart as Array<Product>
