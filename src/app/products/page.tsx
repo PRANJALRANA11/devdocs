@@ -1,23 +1,30 @@
-import Products from "@/components/Products";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-export async function getData() {
-  interface Options {
-    url: string;
-    params: {
-      query: string;
-      page: string;
-      country: string;
-      sort_by: string;
-      product_condition: string;
-      is_prime: string;
-    };
-    headers: {
-      "x-rapidapi-key": string;
-      "x-rapidapi-host": string;
-    };
-  }
-  let query = "Phone";
+import Header from "@/components/pages/Header";
+import Footer from "@/components/pages/Footer";
+import Products from "@/components/pages/Products";
+
+
+// Moved sensitive keys to environment variables for security
+const API_KEY = process.env.NEXT_PUBLIC_RAPIDAPI_KEY;
+const API_HOST = process.env.NEXT_PUBLIC_RAPIDAPI_HOST;
+
+interface Options {
+  url: string;
+  params: {
+    query: string;
+    page: string;
+    country: string;
+    sort_by: string;
+    product_condition: string;
+    is_prime: string;
+  };
+  headers: {
+    "x-rapidapi-key": string;
+    "x-rapidapi-host": string;
+  };
+}
+
+// Fetch data from the API
+async function getData(query: string = "Phone") {
   const options: Options = {
     url: "https://real-time-amazon-data.p.rapidapi.com/search",
     params: {
@@ -29,8 +36,8 @@ export async function getData() {
       is_prime: "false",
     },
     headers: {
-      "x-rapidapi-key": "10b8a93400msh7b87e57da8bb34ap1bf674jsn81b3673f6b0d",
-      "x-rapidapi-host": "real-time-amazon-data.p.rapidapi.com",
+      "x-rapidapi-key": API_KEY || "",
+      "x-rapidapi-host": API_HOST || "",
     },
   };
 
@@ -47,30 +54,37 @@ export async function getData() {
       throw new Error(`HTTP error! Status: ${res.status}`);
     }
 
-
     const data = await res.json();
-    console.log("API response:", data);
-    data.data.products.forEach((product) => {
-      console.log("Product Price:", product.product_price);
-      if(product.product_price!=null)  product.product_price = parseFloat(product.product_price.replace(/[$,]/g, ''));
-      else product.product_price = 200;
+
+    const products = data.data.products.map((product: any) => {
+      // Clean the product price and set a default if null
+      const price = product.product_price
+        ? parseFloat(product.product_price.replace(/[$,]/g, ""))
+        : 200; // Default price
+
+      return {
+        ...product,
+        product_price: price,
+      };
     });
-    return data.data.products;
+
+    return products;
   } catch (error) {
-    console.error("Error while getting products:", error);
+    console.error("Error fetching products:", error);
+    return []; // Return an empty array to avoid breaking the UI
   }
 }
 
-async function page() {
+async function Page() {
   const data = await getData();
+
   return (
     <>
-      {" "}
       <Header />
-      <Products data={data} />;
+      <Products data={data} />
       <Footer />
     </>
   );
 }
 
-export default page;
+export default Page;

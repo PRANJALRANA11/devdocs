@@ -1,8 +1,11 @@
 import React from "react";
 import Link from "next/link";
+import {
+  RegisterLink,
+  LoginLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Toggle } from "@/components/ui/toggle";
-import {RegisterLink, LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
 
 function Header() {
   return (
@@ -24,11 +27,11 @@ function Header() {
           </Link>
 
           <div className="flex items-center md:order-2 space-x-4 lg:space-x-6 rtl:space-x-reverse">
-            <a href="/cart">
+            <Link href="/cart">
               <Toggle variant="outline" aria-label="Toggle italic">
                 🛒
               </Toggle>
-            </a>
+            </Link>
 
             <ModeToggle />
 
@@ -90,7 +93,7 @@ function Header() {
         </div>
         <LoginLink>Sign in</LoginLink>
 
-<RegisterLink>Sign up</RegisterLink>
+        <RegisterLink>Sign up</RegisterLink>
       </nav>
     </div>
   );
