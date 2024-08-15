@@ -54,31 +54,84 @@ function Products({ data }: { data: Product[] }) {
     }
   }, [cartAsins, clickedProducts]);
 
+  useEffect(() => {
+    const getCartProducts = async () => {
+      const response = await fetchProducts(); // Await the fetchProducts call
+
+      if (response?.success && response.cart.length > 0) {
+        // Check if the response is successful and then dispatch the action
+        if (response.cart.filter((value)=> cartAsins.includes(value.asin)).length <0){
+        dispatch(addToCart(response.cart));
+        console.log("dispatch called with ", response.cart);
+        }
+      }
+    };
+
+    getCartProducts();
+  } , []);
+
+  const fetchProducts =   useCallback(async() => {
+    try {
+      const response = await axios.get("/api/get-cart");
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },[]);
   // Add item to cart
   const addItem = useCallback(
-    (product: Product) => {
-      dispatch(addToCart(product));
-
-      if (!clickedProducts.includes(product.asin)) {
-        setClickedProducts((prevClickedProducts) => [
-          ...prevClickedProducts,
-          product.asin,
-        ]);
+    async (product: Product) => {
+     
+  
+      try {
+        // Send POST request to add the item to the cart
+        const response = await axios.post("/api/add-cart", {...product,quantity:1});
+  
+        // Check response.data.success
+        if (response.data.success) {
+          // Dispatch addToCart action to update Redux store
+          dispatch(addToCart(product));
+  
+          // Update clickedProducts state if asin is not already present
+          if (!clickedProducts.includes(product.asin)) {
+            setClickedProducts((prevClickedProducts) => [
+              ...prevClickedProducts,
+              product.asin,
+            ]);
+          }
+        }
+      } catch (error) {
+        console.error(error);
       }
     },
-    [clickedProducts, dispatch]
+    [clickedProducts, dispatch] // Dependencies for useCallback
   );
 
   // Remove item from cart
   const removeItem = useCallback(
-    (product: Product) => {
-      dispatch(removeFromCart({ asin: product.asin, remove: true }));
-
-      setClickedProducts((prevClickedProducts) =>
-        prevClickedProducts.filter((asin) => asin !== product.asin)
-      );
+    async (product: Product) => {
+      try {
+        const response = await axios.delete("/api/delete-cart", {
+          data: { asin: product.asin },
+        });
+  
+        // Check response.data.success
+        if (response.data.success) {
+          // Dispatch the removeFromCart action
+          dispatch(removeFromCart({ asin: product.asin, remove: true }));
+  
+          // Update clickedProducts state
+          setClickedProducts((prevClickedProducts) =>
+            prevClickedProducts.filter((asin) => asin !== product.asin)
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
-    [dispatch]
+    [dispatch] // Correct dependency array
   );
 
   return (

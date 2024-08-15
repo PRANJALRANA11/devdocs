@@ -16,7 +16,7 @@ const CartSchema: Schema<Cart> = new mongoose.Schema(
     product_price: { type: Number, required: true },
     product_photo: { type: String, required: true },
     quantity: { type: Number, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
   },
   { timestamps: true }
 );

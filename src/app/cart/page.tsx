@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -49,25 +50,57 @@ function page() {
   }, [cartState]);
 
   // console.log(cart);
-  const addItem = (product: Product) => {
+  const addItem = async(product: Product) => {
     // Dispatch the action to add the product to the cart
-    let event = null;
-    dispatch(addToCart(product));
-    handleDiscountChange(event);
+   try {
+    const response = await axios.put("/api/update-cart", {...product,quantity:product.quantity+1});
+  
+    // Check response.data.success
+    if (response.data.success) {
+     let event = null;
+     dispatch(addToCart(product));
+     handleDiscountChange(event);
+     console.log(response.data);
+    }
+   } catch (error) {
+     console.log(error);
+    
+   }
   };
 
-  const removeOneItem = (product: Product) => {
+  const removeOneItem = async(product: Product) => {
     // Dispatch the action to remove the product from the cart
-    let event = null;
-    dispatch(removeFromCart({ asin: product.asin, remove: false }));
-    handleDiscountChange(event);
+    try {
+      const response = await axios.put("/api/update-cart", {...product,quantity:product.quantity-1});
+  
+    // Check response.data.success
+    if (response.data.success) {
+      let event = null;
+      dispatch(removeFromCart({ asin: product.asin, remove: false }));
+      handleDiscountChange(event);
+    }
+    } catch (error) {
+      console.log(error);
+      
+    }
   };
 
-  const removeItem = (product: Product) => {
+  const removeItem = async(product: Product) => {
     // Dispatch the action to remove the product from the cart
-    let event = null;
-    dispatch(removeFromCart({ asin: product.asin, remove: true }));
-    handleDiscountChange(event);
+  try {
+    const response = await axios.delete("/api/delete-cart", {
+      data: { asin: product.asin },
+    });
+
+    // Check response.data.success
+    if (response.data.success) {
+      let event = null;
+      dispatch(removeFromCart({ asin: product.asin, remove: true }));
+      handleDiscountChange(event);
+    }
+  } catch (error) {
+    console.log(error);
+  }
   };
 
   const handleDiscountChange = (
@@ -133,7 +166,7 @@ function page() {
                   cart.map((product, index) => (
                     <Card className="rounded-lg border border-gray-200  p-4 shadow-sm  md:p-6">
                       <div
-                        key={product.asin}
+                        key={product?.asin}
                         className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0"
                       >
                         <a href="#" className="w-20 shrink-0 md:order-1">
@@ -141,7 +174,7 @@ function page() {
                             width={20}
                             height={20}
                             className="h-20 w-20 "
-                            src={product.product_photo}
+                            src={product?.product_photo}
                             alt="imac image"
                           />
                         </a>
@@ -182,7 +215,7 @@ function page() {
                               data-input-counter
                               className="w-10 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-gray-900 focus:outline-none focus:ring-0 dark:text-white"
                               placeholder=""
-                              value={product.quantity}
+                              value={product?.quantity}
                               required
                             />
                             <Button
@@ -208,7 +241,7 @@ function page() {
                           </div>
                           <div className="text-end md:order-4 md:w-32">
                             <p className="text-base font-bold text-gray-900 dark:text-white">
-                              $ {product.product_price}
+                              $ {product?.product_price}
                             </p>
                           </div>
                         </div>
@@ -218,10 +251,10 @@ function page() {
                             href="#"
                             className="text-base font-medium text-gray-900 hover:underline dark:text-white"
                           >
-                            {product.product_title
-                              .split(" ")
-                              .slice(0, 3)
-                              .join(" ")}
+                            {product?.product_title
+                              ?.split(" ")
+                              ?.slice(0, 3)
+                              ?.join(" ")}
                           </a>
 
                           <div className="flex items-center gap-4">

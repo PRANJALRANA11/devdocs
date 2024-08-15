@@ -7,6 +7,7 @@ export async function POST(request: Request) {
   try {
     const { getUser } = getKindeServerSession();
     const user = await getUser();
+    console.log(user);
     const { asin, product_title, product_photo, product_price, quantity } =
       await request.json();
     let cartExist = (await CartModel.find({ email: user?.email })).filter(
