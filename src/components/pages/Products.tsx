@@ -20,7 +20,7 @@ import {
   ModalContent,
   ModalTrigger,
 } from "@/components/ui/animated-modal";
-
+import Loading from "@/app/products/loading";
 interface Product {
   asin: string;
   product_photo: string;
@@ -37,6 +37,7 @@ function Products({ data }: { data: Product[] }) {
 
   // State to track clicked products' asin
   const [clickedProducts, setClickedProducts] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const cartAsins = useMemo(() => cart.map((item) => item.asin), [cart]);
 
@@ -86,9 +87,10 @@ function Products({ data }: { data: Product[] }) {
      
   
       try {
+        setLoading(true);
         // Send POST request to add the item to the cart
         const response = await axios.post("/api/add-cart", {...product,quantity:1});
-  
+        setLoading(false);
         // Check response.data.success
         if (response.data.success) {
           // Dispatch addToCart action to update Redux store
@@ -113,10 +115,11 @@ function Products({ data }: { data: Product[] }) {
   const removeItem = useCallback(
     async (product: Product) => {
       try {
+        setLoading(true);
         const response = await axios.delete("/api/delete-cart", {
           data: { asin: product.asin },
         });
-  
+        setLoading(false);
         // Check response.data.success
         if (response.data.success) {
           // Dispatch the removeFromCart action
@@ -167,7 +170,7 @@ function Products({ data }: { data: Product[] }) {
                   onClick={() => removeItem(product)}
                   className="w-full"
                 >
-                  Remove from cart
+                {loading ? <Loading/>: "Remove from cart"}  
                 </Button>
               ) : (
                 <Modal>
@@ -218,7 +221,7 @@ function Products({ data }: { data: Product[] }) {
                         onClick={() => addItem(product)}
                         className="mt-4 w-full"
                       >
-                        Confirm Add to Cart
+                        {loading ? <Loading/>:"Confirm Add to Cart"}
                       </Button>
                     </ModalContent>
                   </ModalBody>

@@ -12,6 +12,7 @@ import { addToCart, removeFromCart } from "@/store/services/cartProductSlice";
 import { useToast } from "@/components/ui/use-toast";
 import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
 import {redirect} from "next/navigation";
+import Loading from "./loading";
 interface Product {
   asin: string;
   product_photo: string;
@@ -21,9 +22,9 @@ interface Product {
 }
 
 function page() {
-  const { isAuthenticated } = useKindeBrowserClient();
+  // const { isAuthenticated } = useKindeBrowserClient();
 
-  if( !isAuthenticated) redirect("/api/auth/login");
+  // if( !isAuthenticated) redirect("/api/auth/login");
   const dispatch = useAppDispatch();
   const cartState = useAppSelector(
     (state): Array<Product> => state.cart as Array<Product>
@@ -35,6 +36,7 @@ function page() {
   const [discountPercentageToNumber, setDiscountPercentageToNumber] =
     useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -64,6 +66,10 @@ function page() {
      let event = null;
      dispatch(addToCart(product));
      handleDiscountChange(event);
+     toast({
+      title: "Product added to cart",
+      description: "Product has been added to cart successfully",
+    });
      console.log(response.data);
     }
    } catch (error) {
@@ -79,9 +85,14 @@ function page() {
   
     // Check response.data.success
     if (response.data.success) {
+
       let event = null;
       dispatch(removeFromCart({ asin: product.asin, remove: false }));
       handleDiscountChange(event);
+      toast({
+        title: "Product removed to cart",
+        description: "Product has been removed from cart successfully",
+      });
     }
     } catch (error) {
       console.log(error);
@@ -92,10 +103,11 @@ function page() {
   const removeItem = async(product: Product) => {
     // Dispatch the action to remove the product from the cart
   try {
+    setLoading(true);
     const response = await axios.delete("/api/delete-cart", {
       data: { asin: product.asin },
     });
-
+    setLoading(false);
     // Check response.data.success
     if (response.data.success) {
       let event = null;
@@ -112,6 +124,14 @@ function page() {
   ) => {
     if (event) event.preventDefault();
     if (event) {
+      if(cart.length<0){
+        toast({
+          variant: "destructive",
+          title: "Cart is empty",
+          description: "Please add items to cart",
+        });
+        return;
+      }
       if (discountPercentage == 0) {
         toast({
           variant: "destructive",
@@ -309,7 +329,7 @@ function page() {
                                   d="M6 18 17.94 6M18 18 6.06 6"
                                 />
                               </svg>
-                              Remove
+                            {loading ?<Loading/>: "Remove"}  
                             </Button>
                           </div>
                         </div>
@@ -359,10 +379,14 @@ function page() {
                 <Button
                   className="ml-14"
                   onClick={() => {
-                    toast({
+                   {cart.length>0 ? (toast({
                       title: "Checkout has been successful",
                       description: "Your order has been placed successfully",
-                    });
+                    })): (toast({
+                      variant: "destructive",
+                      title: "Cart is empty",
+                      description: "Please add items to cart",
+                    }))}
                   }}
                 >
                   Proceed to Checkout
