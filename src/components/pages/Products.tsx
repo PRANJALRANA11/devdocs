@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/hook";
 import Image from "next/image";
+import axios from "axios";  
 import { motion } from "framer-motion";
 import {
   Card,

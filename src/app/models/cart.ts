@@ -6,6 +6,7 @@ export interface Cart extends Document {
   product_price: number;
   product_photo: string;
   quantity: number;
+  email: string;
 }
 
 const CartSchema: Schema<Cart> = new mongoose.Schema(
@@ -15,7 +16,7 @@ const CartSchema: Schema<Cart> = new mongoose.Schema(
     product_price: { type: Number, required: true },
     product_photo: { type: String, required: true },
     quantity: { type: Number, required: true },
-    token: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
   },
   { timestamps: true }
 );
