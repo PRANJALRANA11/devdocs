@@ -1,13 +1,28 @@
-import React from "react";
+"use client";
+import React,{useEffect,useCallback,useState} from "react";
 import Link from "next/link";
-import {
-  RegisterLink,
-  LoginLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Toggle } from "@/components/ui/toggle";
-
+import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 function Header() {
+  const { getUser } = useKindeBrowserClient();
+  const [user, setUser] = useState(null);
+
+  const GetUserDetails = useCallback(async () => {
+    try {
+      const userDetails = await getUser(); // Await the user details
+      console.log(userDetails);
+      setUser(userDetails); // Set the user state
+    } catch (error) {
+      console.error("Error fetching user details", error);
+    }
+  }, [getUser]); // Dependency on `getUser`
+
+  useEffect(() => {
+    GetUserDetails(); // Call the function when the component mounts
+  }, [GetUserDetails]); // Dependency on `GetUserDetails`
+
   return (
     <div>
       <nav className="border-gray-200">
@@ -40,8 +55,10 @@ function Header() {
               className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
             >
               <img
+              src={user?.picture}
+              
                 className="w-8 h-8 rounded-full"
-                src="https://github.com/shadcn.png"
+        
                 alt="user photo"
               />
             </button>
@@ -80,20 +97,19 @@ function Header() {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <LogoutLink>
+                <p
                   className="block py-2 px-3 rounded md:bg-transparent md:p-0"
                   aria-current="page"
                 >
-                  For you
-                </a>
+                  Logout
+                </p>
+                </LogoutLink>
               </li>
             </ul>
           </div>
         </div>
-        <LoginLink>Sign in</LoginLink>
-
-        <RegisterLink>Sign up</RegisterLink>
+       
       </nav>
     </div>
   );

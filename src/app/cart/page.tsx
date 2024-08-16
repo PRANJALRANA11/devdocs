@@ -1,7 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Header from "@/components/pages/Header";
@@ -10,9 +17,9 @@ import Footer from "@/components/pages/Footer";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/hook";
 import { addToCart, removeFromCart } from "@/store/services/cartProductSlice";
 import { useToast } from "@/components/ui/use-toast";
-import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
-import {redirect} from "next/navigation";
-import Loading from "./loading";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { redirect } from "next/navigation";
+import ButtonLoader from "@/components/ui/button-loader";
 interface Product {
   asin: string;
   product_photo: string;
@@ -56,67 +63,70 @@ function page() {
   }, [cartState]);
 
   // console.log(cart);
-  const addItem = async(product: Product) => {
+  const addItem = async (product: Product) => {
     // Dispatch the action to add the product to the cart
-   try {
-    const response = await axios.put("/api/update-cart", {...product,quantity:product.quantity+1});
-  
-    // Check response.data.success
-    if (response.data.success) {
-     let event = null;
-     dispatch(addToCart(product));
-     handleDiscountChange(event);
-     toast({
-      title: "Product added to cart",
-      description: "Product has been added to cart successfully",
-    });
-     console.log(response.data);
-    }
-   } catch (error) {
-     console.log(error);
-    
-   }
-  };
-
-  const removeOneItem = async(product: Product) => {
-    // Dispatch the action to remove the product from the cart
     try {
-      const response = await axios.put("/api/update-cart", {...product,quantity:product.quantity-1});
-  
-    // Check response.data.success
-    if (response.data.success) {
-
-      let event = null;
-      dispatch(removeFromCart({ asin: product.asin, remove: false }));
-      handleDiscountChange(event);
-      toast({
-        title: "Product removed to cart",
-        description: "Product has been removed from cart successfully",
+      const response = await axios.put("/api/update-cart", {
+        ...product,
+        quantity: product.quantity + 1,
       });
-    }
+
+      // Check response.data.success
+      if (response.data.success) {
+        let event = null;
+        dispatch(addToCart(product));
+        handleDiscountChange(event);
+        toast({
+          title: "Product added to cart",
+          description: "Product has been added to cart successfully",
+        });
+        console.log(response.data);
+      }
     } catch (error) {
       console.log(error);
-      
     }
   };
 
-  const removeItem = async(product: Product) => {
+  const removeOneItem = async (product: Product) => {
     // Dispatch the action to remove the product from the cart
-  try {
-    setLoading(true);
-    const response = await axios.delete("/api/delete-cart", {
-      data: { asin: product.asin },
-    });
-    setLoading(false);
-    // Check response.data.success
-    if (response.data.success) {
-      let event = null;
-      dispatch(removeFromCart({ asin: product.asin, remove: true }));
-      handleDiscountChange(event);
+    try {
+      const response = await axios.put("/api/update-cart", {
+        ...product,
+        quantity: product.quantity - 1,
+      });
+
+      // Check response.data.success
+      if (response.data.success) {
+        let event = null;
+        dispatch(removeFromCart({ asin: product.asin, remove: false }));
+        handleDiscountChange(event);
+        toast({
+          title: "Product removed to cart",
+          description: "Product has been removed from cart successfully",
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
-  }
+  };
+
+  const removeItem = async (product: Product) => {
+    // Dispatch the action to remove the product from the cart
+    try {
+      setLoading(true);
+      const response = await axios.delete("/api/delete-cart", {
+        data: { asin: product.asin },
+      });
+      setLoading(false);
+      // Check response.data.success
+      if (response.data.success) {
+        let event = null;
+        dispatch(removeFromCart({ asin: product.asin, remove: true }));
+        handleDiscountChange(event);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDiscountChange = (
@@ -124,7 +134,7 @@ function page() {
   ) => {
     if (event) event.preventDefault();
     if (event) {
-      if(cart.length<0){
+      if (cart.length < 0) {
         toast({
           variant: "destructive",
           title: "Cart is empty",
@@ -186,9 +196,9 @@ function page() {
           <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
             <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
               <div className="space-y-6">
-                {cart &&
+                {cart.length > 0 ? (
                   cart.map((product, index) => (
-                    <Card className="rounded-lg border border-gray-200  p-4 shadow-sm  md:p-6">
+                    <Card className="rounded-lg border border-gray-200  p-4 shadow-sm  md:p-6  hover:scale-105 transform transition-transform duration-300">
                       <div
                         key={product?.asin}
                         className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0"
@@ -309,7 +319,7 @@ function page() {
                             <Button
                               type="button"
                               variant={"destructive"}
-                              className="inline-flex items-center text-sm font-medium hover:underline "
+                              className="inline-flex items-center text-sm font-medium hover:underline  hover:scale-105 transform transition-transform duration-300"
                               onClick={() => removeItem(product)}
                             >
                               <svg
@@ -329,13 +339,18 @@ function page() {
                                   d="M6 18 17.94 6M18 18 6.06 6"
                                 />
                               </svg>
-                            {loading ?<Loading/>: "Remove"}  
+                              {loading ? <ButtonLoader /> : "Remove"}
                             </Button>
                           </div>
                         </div>
                       </div>
                     </Card>
-                  ))}
+                  ))
+                ) : (
+                  <Card className="lg:h-[33rem]">
+                   
+                  </Card>
+                )}
               </div>
             </div>
 
@@ -379,14 +394,19 @@ function page() {
                 <Button
                   className="ml-14"
                   onClick={() => {
-                   {cart.length>0 ? (toast({
-                      title: "Checkout has been successful",
-                      description: "Your order has been placed successfully",
-                    })): (toast({
-                      variant: "destructive",
-                      title: "Cart is empty",
-                      description: "Please add items to cart",
-                    }))}
+                    {
+                      cart.length > 0
+                        ? toast({
+                            title: "Checkout has been successful",
+                            description:
+                              "Your order has been placed successfully",
+                          })
+                        : toast({
+                            variant: "destructive",
+                            title: "Cart is empty",
+                            description: "Please add items to cart",
+                          });
+                    }
                   }}
                 >
                   Proceed to Checkout
