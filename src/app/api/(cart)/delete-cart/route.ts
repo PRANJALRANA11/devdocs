@@ -12,7 +12,7 @@ export async function DELETE(request: Request) {
     const cart = await CartModel.deleteMany({ email: user?.email, asin });
     return NextResponse.json({ cart, status: 200, success: true });
   } catch (error) {
-   return NextResponse.json({
+    return NextResponse.json({
       status: 400,
       message: (error as Error).message,
       success: false,

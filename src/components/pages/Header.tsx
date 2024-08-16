@@ -1,27 +1,29 @@
 "use client";
-import React,{useEffect,useCallback,useState} from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import Link from "next/link";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Toggle } from "@/components/ui/toggle";
-import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
+import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 function Header() {
   const { getUser } = useKindeBrowserClient();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<KindeUser | null>(null);
 
+  // Get user details function
   const GetUserDetails = useCallback(async () => {
     try {
-      const userDetails = await getUser(); // Await the user details
+      const userDetails = await getUser();
       console.log(userDetails);
-      setUser(userDetails); // Set the user state
+      setUser(userDetails);
     } catch (error) {
       console.error("Error fetching user details", error);
     }
-  }, [getUser]); // Dependency on `getUser`
+  }, [getUser]);
 
   useEffect(() => {
-    GetUserDetails(); // Call the function when the component mounts
-  }, [GetUserDetails]); // Dependency on `GetUserDetails`
+    GetUserDetails();
+  }, [GetUserDetails]);
 
   return (
     <div>
@@ -55,10 +57,8 @@ function Header() {
               className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
             >
               <img
-              src={user?.picture}
-              
+                src={user?.picture ?? ""}
                 className="w-8 h-8 rounded-full"
-        
                 alt="user photo"
               />
             </button>
@@ -98,18 +98,17 @@ function Header() {
               </li>
               <li>
                 <LogoutLink>
-                <p
-                  className="block py-2 px-3 rounded md:bg-transparent md:p-0"
-                  aria-current="page"
-                >
-                  Logout
-                </p>
+                  <p
+                    className="block py-2 px-3 rounded md:bg-transparent md:p-0"
+                    aria-current="page"
+                  >
+                    Logout
+                  </p>
                 </LogoutLink>
               </li>
             </ul>
           </div>
         </div>
-       
       </nav>
     </div>
   );

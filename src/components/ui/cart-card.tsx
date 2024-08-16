@@ -3,8 +3,20 @@ import Image from "next/image";
 import { Button } from "./button";
 import ButtonLoader from "./button-loader";
 
-const CartCard = ({ product, removeOneItem, addItem, removeItem, loading }) => (
-    <div
+const CartCard = ({
+  product,
+  removeOneItem,
+  addItem,
+  removeItem,
+  loading,
+}: {
+  product: any;
+  removeOneItem: any;
+  addItem: any;
+  removeItem: any;
+  loading: boolean;
+}) => (
+  <div
     key={product.asin}
     className="rounded-lg border border-gray-200 p-4 shadow-sm md:p-6 hover:scale-105 transform transition-transform duration-300"
   >
@@ -22,46 +34,43 @@ const CartCard = ({ product, removeOneItem, addItem, removeItem, loading }) => (
 
       <div className="flex items-center justify-between md:order-3 md:justify-end">
         <div className="flex items-center">
-         {product.quantity<2 ? <Button
-            variant={"destructive"}
-            disabled={true}
-          >
-            <svg
-              className="h-2.5 w-2.5 text-gray-900 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 2"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 1h16"
-              />
-            </svg>
-          </Button>:<Button
-            variant={"outline"}
-            onClick={() => removeOneItem(product)}
-        
-          >
-            <svg
-              className="h-2.5 w-2.5 text-gray-900 dark:text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 18 2"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M1 1h16"
-              />
-            </svg>
-          </Button>}
+          {product.quantity < 2 ? (
+            <Button variant={"destructive"} disabled={true}>
+              <svg
+                className="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 18 2"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 1h16"
+                />
+              </svg>
+            </Button>
+          ) : (
+            <Button variant={"outline"} onClick={() => removeOneItem(product)}>
+              <svg
+                className="h-2.5 w-2.5 text-gray-900 dark:text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 18 2"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 1h16"
+                />
+              </svg>
+            </Button>
+          )}
           <input
             type="text"
             id="counter-input"
@@ -70,10 +79,7 @@ const CartCard = ({ product, removeOneItem, addItem, removeItem, loading }) => (
             value={product.quantity}
             readOnly
           />
-          <Button
-            variant={"outline"}
-            onClick={() => addItem(product)}
-          >
+          <Button variant={"outline"} onClick={() => addItem(product)}>
             <svg
               className="h-2.5 w-2.5"
               aria-hidden="true"
@@ -103,10 +109,7 @@ const CartCard = ({ product, removeOneItem, addItem, removeItem, loading }) => (
           href="#"
           className="text-base font-medium text-gray-900 hover:underline dark:text-white"
         >
-          {product.product_title
-            .split(" ")
-            .slice(0, 3)
-            .join(" ")}
+          {product.product_title.split(" ").slice(0, 3).join(" ")}
         </a>
         <div className="flex items-center gap-4">
           <button

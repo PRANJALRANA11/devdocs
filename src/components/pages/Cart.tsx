@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import axios from "axios";
-import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/hook";
 import { addToCart, removeFromCart } from "@/store/services/cartProductSlice";
 import { useToast } from "@/components/ui/use-toast";
-import ButtonLoader from "@/components/ui/button-loader";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import CartCard from "../ui/cart-card";
+
 interface Product {
   asin: string;
   product_photo: string;
@@ -23,139 +22,158 @@ const Cart: React.FC = () => {
   );
 
   const [cart, setCart] = useState<Product[]>([]);
-  const [originalPrice, setOriginalPrice] = useState(0);
-  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [originalPrice, setOriginalPrice] = useState<number>(0);
+  const [discountPercentage, setDiscountPercentage] = useState<number>(0);
   const [discountPercentageToNumber, setDiscountPercentageToNumber] =
-    useState(0);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [loading, setLoading] = useState(false);
+    useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    setCart(cartState); // Make sure cart is updated with cartState
-
-    const calculatePrice = () => {
-      let totalPrice = 0;
-      cartState.forEach((product) => {
-        totalPrice += product.product_price; // Sum the price of all products
-      });
-      setOriginalPrice(parseFloat(totalPrice.toFixed(2))); // Set the total original price with two decimal places
-      setTotalPrice(parseFloat(totalPrice.toFixed(2))); // Set the total original price with two decimal places
-      if (totalPrice === 0) setDiscountPercentageToNumber(0);
-    };
-
-    calculatePrice();
+  // To memoize the calculatePrice function
+  const calculatePrice = useMemo(() => {
+    const totalPrice = cartState.reduce(
+      (total, product) => total + product.product_price * product.quantity,
+      0
+    );
+    return parseFloat(totalPrice.toFixed(2));
   }, [cartState]);
 
-  const addItem = async (product: Product) => {
-    try {
-      const response = await axios.put("/api/update-cart", {
-        ...product,
-        quantity: product.quantity + 1,
-      });
+  // Update the prices and discount based on cart changes
+  useEffect(() => {
+    setCart(cartState); // Update cart
 
-      if (response.data.success) {
-        dispatch(addToCart(product));
-        handleDiscountChange(null);
-        toast({
-          title: "Product added to cart",
-          description: "Product has been added to cart successfully",
+    setOriginalPrice(calculatePrice);
+    setTotalPrice(calculatePrice);
+
+    if (calculatePrice === 0) {
+      setDiscountPercentageToNumber(0);
+    }
+  }, [cartState, calculatePrice]);
+
+  //   Add item quantity
+  const addItem = useCallback(
+    async (product: Product) => {
+      try {
+        const response = await axios.put("/api/update-cart", {
+          ...product,
+          quantity: product.quantity + 1,
         });
+
+        if (response.data.success) {
+          dispatch(addToCart(product));
+          handleDiscountChange(null);
+          toast({
+            title: "Product added to cart",
+            description: "Product has been added to cart successfully",
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [dispatch]
+  );
 
-  const removeOneItem = async (product: Product) => {
-    try {
-      const response = await axios.put("/api/update-cart", {
-        ...product,
-        quantity: product.quantity - 1,
-      });
-
-      if (response.data.success) {
-        dispatch(removeFromCart({ asin: product.asin, remove: false }));
-        handleDiscountChange(null);
-        toast({
-          title: "Product removed from cart",
-          description: "Product has been removed from cart successfully",
+  //   Remove one item from cart
+  const removeOneItem = useCallback(
+    async (product: Product) => {
+      try {
+        const response = await axios.put("/api/update-cart", {
+          ...product,
+          quantity: product.quantity - 1,
         });
+
+        if (response.data.success) {
+          dispatch(removeFromCart({ asin: product.asin, remove: false }));
+          handleDiscountChange(null);
+          toast({
+            title: "Product removed from cart",
+            description: "Product has been removed from cart successfully",
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [dispatch]
+  );
 
-  const removeItem = async (product: Product) => {
-    try {
-      setLoading(true);
-      const response = await axios.delete("/api/delete-cart", {
-        data: { asin: product.asin },
-      });
-      setLoading(false);
+  // Remove whole item from cart
+  const removeItem = useCallback(
+    async (product: Product) => {
+      try {
+        setLoading(true);
+        const response = await axios.delete("/api/delete-cart", {
+          data: { asin: product.asin },
+        });
+        setLoading(false);
 
-      if (response.data.success) {
-        dispatch(removeFromCart({ asin: product.asin, remove: true }));
-        handleDiscountChange(null);
+        if (response.data.success) {
+          dispatch(removeFromCart({ asin: product.asin, remove: true }));
+          handleDiscountChange(null);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [dispatch]
+  );
 
-  const handleDiscountChange = (
-    event: { preventDefault: () => void } | null
-  ) => {
-    if (event) event.preventDefault();
-    if (cart.length === 0) {
-      toast({
-        variant: "destructive",
-        title: "Cart is empty",
-        description: "Please add items to cart",
-      });
-      return;
-    }
-    if (discountPercentage === 0) {
-      toast({
-        variant: "destructive",
-        title: "Discount percentage is required",
-        description: "Please enter a discount percentage",
-      });
-      return;
-    }
-    if (discountPercentage < 0) {
-      toast({
-        variant: "destructive",
-        title: "Discount percentage is invalid",
-        description: "Please enter a valid discount percentage",
-      });
-      return;
-    }
-    if (discountPercentage > 40) {
-      toast({
-        variant: "destructive",
-        title: "Discount percentage is invalid",
-        description: "Please enter a discount percentage less than 40",
-      });
-      return;
-    }
-    if (originalPrice === 0) {
-      toast({
-        variant: "destructive",
-        title: "Cart is empty",
-        description: "Please add items to cart",
-      });
-      return;
-    }
+  // Handle discount change and calculate the total price
+  const handleDiscountChange = useCallback(
+    (event: { preventDefault: () => void } | null) => {
+      if (event) event.preventDefault();
+      if (cart.length === 0) {
+        toast({
+          variant: "destructive",
+          title: "Cart is empty",
+          description: "Please add items to cart",
+        });
+        return;
+      }
+      if (discountPercentage === 0) {
+        toast({
+          variant: "destructive",
+          title: "Discount percentage is required",
+          description: "Please enter a discount percentage",
+        });
+        return;
+      }
+      if (discountPercentage < 0) {
+        toast({
+          variant: "destructive",
+          title: "Discount percentage is invalid",
+          description: "Please enter a valid discount percentage",
+        });
+        return;
+      }
+      if (discountPercentage > 40) {
+        toast({
+          variant: "destructive",
+          title: "Discount percentage is invalid",
+          description: "Please enter a discount percentage less than 40",
+        });
+        return;
+      }
+      if (originalPrice === 0) {
+        toast({
+          variant: "destructive",
+          title: "Cart is empty",
+          description: "Please add items to cart",
+        });
+        return;
+      }
 
-    setDiscountPercentageToNumber(
-      parseFloat(((originalPrice * discountPercentage) / 100).toFixed(2))
-    );
-    let total_price =
-      originalPrice - (originalPrice * discountPercentage) / 100;
-    setTotalPrice(parseFloat(total_price.toFixed(2)));
-  };
+      setDiscountPercentageToNumber(
+        parseFloat(((originalPrice * discountPercentage) / 100).toFixed(2))
+      );
+      let total_price =
+        originalPrice - (originalPrice * discountPercentage) / 100;
+      setTotalPrice(parseFloat(total_price.toFixed(2)));
+    },
+    [cart, discountPercentage, originalPrice]
+  );
 
   return (
     <div>
@@ -171,13 +189,13 @@ const Cart: React.FC = () => {
                 {cart.length > 0 ? (
                   cart.map((product) => (
                     <CartCard
-          key={product.asin}
-          product={product}
-          removeOneItem={removeOneItem}
-          addItem={addItem}
-          removeItem={removeItem}
-          loading={loading}
-        />
+                      key={product.asin}
+                      product={product}
+                      removeOneItem={removeOneItem}
+                      addItem={addItem}
+                      removeItem={removeItem}
+                      loading={loading}
+                    />
                   ))
                 ) : (
                   <div className="lg:h-[33rem]">

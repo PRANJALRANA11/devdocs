@@ -1,19 +1,10 @@
 "use client";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/hook";
-import Image from "next/image";
 import axios from "axios";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { addToCart, removeFromCart } from "@/store/services/cartProductSlice";
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalTrigger,
-} from "@/components/ui/animated-modal";
-import ButtonLoader from "@/components/ui/button-loader";
 import ProductCard from "../ui/product-card";
+
 interface Product {
   asin: string;
   product_photo: string;
@@ -32,6 +23,7 @@ function Products({ data }: { data: Product[] }) {
   const [clickedProducts, setClickedProducts] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Get asins of products in cart
   const cartAsins = useMemo(() => cart.map((item) => item.asin), [cart]);
 
   // Add products in cart to clickedProducts
@@ -50,13 +42,13 @@ function Products({ data }: { data: Product[] }) {
 
   useEffect(() => {
     const getCartProducts = async () => {
-      const response = await fetchProducts(); // Await the fetchProducts call
+      const response = await fetchProducts();
 
       if (response?.success && response.cart.length > 0) {
-        // Check if the response is successful and then dispatch the action
         if (
-          response.cart.filter((value) => cartAsins.includes(value.asin))
-            .length < 0
+          response.cart.filter((value: { asin: string }) =>
+            cartAsins.includes(value.asin)
+          ).length < 0
         ) {
           dispatch(addToCart(response.cart));
           console.log("dispatch called with ", response.cart);
@@ -67,6 +59,7 @@ function Products({ data }: { data: Product[] }) {
     getCartProducts();
   }, []);
 
+  // Fetch cart products from the server
   const fetchProducts = useCallback(async () => {
     try {
       const response = await axios.get("/api/get-cart");
@@ -77,23 +70,22 @@ function Products({ data }: { data: Product[] }) {
       return null;
     }
   }, []);
+
   // Add item to cart
   const addItem = useCallback(
     async (product: Product) => {
       try {
         setLoading(true);
-        // Send POST request to add the item to the cart
+
         const response = await axios.post("/api/add-cart", {
           ...product,
           quantity: 1,
         });
         setLoading(false);
-        // Check response.data.success
+
         if (response.data.success) {
-          // Dispatch addToCart action to update Redux store
           dispatch(addToCart(product));
 
-          // Update clickedProducts state if asin is not already present
           if (!clickedProducts.includes(product.asin)) {
             setClickedProducts((prevClickedProducts) => [
               ...prevClickedProducts,
@@ -105,7 +97,7 @@ function Products({ data }: { data: Product[] }) {
         console.error(error);
       }
     },
-    [clickedProducts, dispatch] // Dependencies for useCallback
+    [clickedProducts, dispatch]
   );
 
   // Remove item from cart
@@ -117,12 +109,10 @@ function Products({ data }: { data: Product[] }) {
           data: { asin: product.asin },
         });
         setLoading(false);
-        // Check response.data.success
+
         if (response.data.success) {
-          // Dispatch the removeFromCart action
           dispatch(removeFromCart({ asin: product.asin, remove: true }));
 
-          // Update clickedProducts state
           setClickedProducts((prevClickedProducts) =>
             prevClickedProducts.filter((asin) => asin !== product.asin)
           );
@@ -131,7 +121,7 @@ function Products({ data }: { data: Product[] }) {
         console.log(error);
       }
     },
-    [dispatch] // Correct dependency array
+    [dispatch]
   );
 
   return (
@@ -144,7 +134,7 @@ function Products({ data }: { data: Product[] }) {
             addItem={addItem}
             removeItem={removeItem}
             loading={loading}
-            clickedProducts={clickedProducts} 
+            clickedProducts={clickedProducts}
           />
         ))}
     </div>

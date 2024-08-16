@@ -2,18 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // Initialize state with localStorage if available
 interface CartItem {
-  asin: string; // Add the 'asin' property
+  asin: string;
   product_title: string;
-  product_price: number; // Add the 'product_price' property
+  product_price: number;
   quantity: number;
-  // Add other properties here
 }
 
 let initialState: CartItem[] = [];
 
 if (typeof window !== "undefined" && localStorage.getItem("cart")) {
   initialState = JSON.parse(localStorage.getItem("cart") ?? "[]");
-  console.log("initial state" , initialState);
+  console.log("initial state", initialState);
 }
 
 const cartSlice = createSlice({
