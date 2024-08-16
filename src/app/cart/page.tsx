@@ -1,8 +1,11 @@
 "use client";
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import Footer from "@/components/pages/Footer";
 import Header from "@/components/pages/Header";
-import Cart from "@/components/pages/Cart";
+const Cart = dynamic(() => import('@/components/pages/Cart'), {
+  suspense: true,
+});
 
 // import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 // import { redirect } from "next/navigation";

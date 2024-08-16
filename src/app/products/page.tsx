@@ -1,8 +1,12 @@
+import { redirect } from "next/navigation";
+import dynamic from "next/dynamic";
 import Header from "@/components/pages/Header";
 import Footer from "@/components/pages/Footer";
-import Products from "@/components/pages/Products";
+const Products = dynamic(() => import('@/components/pages/Products'), {
+  suspense: true,
+});
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { redirect } from "next/navigation";
+
 
 // Moved sensitive keys to environment variables for security
 const API_KEY = process.env.NEXT_PUBLIC_RAPIDAPI_KEY;
