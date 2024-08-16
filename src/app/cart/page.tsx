@@ -7,8 +7,8 @@ const Cart = dynamic(() => import("@/components/pages/Cart"), {
   suspense: true,
 });
 
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { redirect } from "next/navigation";
+// import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+// import { redirect } from "next/navigation";
 
 interface Product {
   asin: string;
@@ -19,9 +19,9 @@ interface Product {
 }
 
 function page() {
-  const { isAuthenticated } = useKindeBrowserClient();
+  // const { isAuthenticated } = useKindeBrowserClient();
 
-  if (!isAuthenticated) redirect("/api/auth/login");
+  // if (!isAuthenticated) redirect("/api/auth/login");
 
   return (
     <div>
