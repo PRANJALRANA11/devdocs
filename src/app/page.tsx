@@ -10,7 +10,7 @@ import {
 export default function Home() {
   return (
     <div className="w-full mx-auto rounded-md h-[100vh] overflow-hidden">
-      <Vortex className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full">
+      <Vortex backgroundColor="black" className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full">
         <h2 className="text-white text-2xl md:text-6xl font-bold text-center">
           Welcome to our Ecommerce site
         </h2>
@@ -21,13 +21,13 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
           <LoginLink>
             {" "}
-            <Button className="">Sign in</Button>
+            <button className="px-4 py-2 bg-white hover:bg-gray-300 transition duration-200 rounded-lg text-black shadow-[0px_2px_0px_0px_#FFFFFF40_inset]">Sign in</button>
           </LoginLink>
           <RegisterLink>
             {" "}
-            <Button variant={"outline"} className="px-4 py-2  text-white ">
+            <button className="px-4 py-2  text-white ">
               Sign up
-            </Button>
+            </button>
           </RegisterLink>
         </div>
       </Vortex>

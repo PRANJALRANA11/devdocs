@@ -201,13 +201,15 @@ function page() {
                     <Card className="rounded-lg border border-gray-200  p-4 shadow-sm  md:p-6  hover:scale-105 transform transition-transform duration-300">
                       <div
                         key={product?.asin}
-                        className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0"
+                        className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0
+                        "
                       >
                         <a href="#" className="w-20 shrink-0 md:order-1">
                           <Image
-                            width={20}
-                            height={20}
-                            className="h-20 w-20 "
+                              width={150}
+                  height={150}
+                  priority
+                  className=" mt-5 mx-auto object-contain w-[150px] h-[150px]"
                             src={product?.product_photo}
                             alt="imac image"
                           />
@@ -348,7 +350,8 @@ function page() {
                   ))
                 ) : (
                   <Card className="lg:h-[33rem]">
-                   
+                   <img src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-illustration-download-in-svg-png-gif-file-formats--shopping-ecommerce-simple-error-state-pack-user-interface-illustrations-6024626.png" className=" mx-auto  w-80 my-32 h-80" />
+                
                   </Card>
                 )}
               </div>
@@ -392,7 +395,7 @@ function page() {
                 </div>
 
                 <Button
-                  className="ml-14"
+                  className="mx-auto w-full"
                   onClick={() => {
                     {
                       cart.length > 0
