@@ -4,12 +4,13 @@ import StoreProvider from "./storeProvider";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster";
+import type { Metadata } from 'next'
+ 
+export const metadata: Metadata = {
+  title: 'Ecommerce',
+  description: 'Ecommerece site built with Next.js',
 
-<head>
-<title>Ecommerce</title>
-<meta name="description" content="A Ecommerece site" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-</head>
+}
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,7 +22,7 @@ export default function RootLayout({
         <StoreProvider>
           <NextThemesProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="light"
             enableSystem
             disableTransitionOnChange
           >
