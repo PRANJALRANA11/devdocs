@@ -70,11 +70,18 @@ export const ModalBody = ({
   const { open } = useModal();
 
   useEffect(() => {
+    const originalOverflow = window.getComputedStyle(document.body).overflow;
+    
     if (open) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = originalOverflow;
     }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
   }, [open]);
 
   const modalRef = useRef(null);
