@@ -39,7 +39,7 @@ function Header() {
               alt="Flowbite Logo"
             />
             <span className="self-center md:text-2xl  text-xl  font-semibold whitespace-nowrap dark:text-white">
-              Ecommerce
+              ShopFusion
             </span>
           </Link>
 

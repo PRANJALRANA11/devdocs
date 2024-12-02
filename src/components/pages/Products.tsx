@@ -125,18 +125,24 @@ function Products({ data }: { data: Product[] }) {
   );
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4 p-4 md:p-10 lg:p-20 lg:grid-cols-3">
-      {data &&
-        data.map((product) => (
-          <ProductCard
-            key={product.asin}
-            product={product}
-            addItem={addItem}
-            removeItem={removeItem}
-            loading={loading}
-            clickedProducts={clickedProducts}
-          />
-        ))}
+    <div>
+      {" "}
+      <div className="flex justify-center mt-2">
+        <img src="banner.png" alt="banner" className="w-full h-60" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4 p-4 md:p-10 lg:p-20 lg:grid-cols-3">
+        {data &&
+          data.map((product) => (
+            <ProductCard
+              key={product.asin}
+              product={product}
+              addItem={addItem}
+              removeItem={removeItem}
+              loading={loading}
+              clickedProducts={clickedProducts}
+            />
+          ))}
+      </div>
     </div>
   );
 }

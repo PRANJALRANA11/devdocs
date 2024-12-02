@@ -12,7 +12,7 @@ export default function Home() {
     <div className="w-full mx-auto rounded-md h-[100vh] overflow-hidden">
       <Vortex backgroundColor="black" className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full">
         <h2 className="text-white text-2xl md:text-6xl font-bold text-center">
-          Welcome to our Ecommerce site
+          Welcome to our ShopFusion
         </h2>
         <p className="text-white text-sm md:text-2xl max-w-xl mt-6 text-center">
           here you can find the best products at the best prices and the best

@@ -63,7 +63,7 @@ function ProductCard({
         </div>
         <div className="flex items-center justify-between">
           <span className="md:text-3xl text-xl font-bold text-gray-900 dark:text-white">
-            ${product.product_price}
+            ₹{product.product_price}
           </span>
 
           {clickedProducts.includes(product.asin) ? (
