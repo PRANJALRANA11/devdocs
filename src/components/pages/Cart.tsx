@@ -33,7 +33,8 @@ const Cart: React.FC = () => {
   // To memoize the calculatePrice function
   const calculatePrice = useMemo(() => {
     const totalPrice = cartState.reduce(
-      (total, product) => total + product.product_price * product.quantity,
+      (total, product) =>
+        total + product.product_price * 100 * product.quantity,
       0
     );
     return parseFloat(totalPrice.toFixed(2));
@@ -221,7 +222,7 @@ const Cart: React.FC = () => {
                         Original price
                       </dt>
                       <dd className="text-base font-medium text-gray-900 dark:text-white">
-                        $ {originalPrice}
+                        ₹ {originalPrice}
                       </dd>
                     </dl>
 
@@ -230,7 +231,7 @@ const Cart: React.FC = () => {
                         discount
                       </dt>
                       <dd className="text-base font-medium text-green-600">
-                        $ {discountPercentageToNumber}
+                        ₹ {discountPercentageToNumber}
                       </dd>
                     </dl>
                   </div>
@@ -240,7 +241,7 @@ const Cart: React.FC = () => {
                       Total
                     </dt>
                     <dd className="text-base font-bold text-gray-900 dark:text-white">
-                      $ {totalPrice}
+                      ₹ {totalPrice}
                     </dd>
                   </dl>
                 </div>

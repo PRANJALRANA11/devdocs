@@ -63,7 +63,7 @@ function ProductCard({
         </div>
         <div className="flex items-center justify-between">
           <span className="md:text-3xl text-xl font-bold text-gray-900 dark:text-white">
-            ₹{product.product_price}
+            ₹{(product.product_price * 100).toLocaleString("en-IN")}
           </span>
 
           {clickedProducts.includes(product.asin) ? (
@@ -90,7 +90,7 @@ function ProductCard({
                     <span className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-neutral-800 dark:border-neutral-700 border border-gray-200  ">
                       {product.product_title.split(" ").slice(0, 2).join(" ")}
                     </span>{" "}
-                    for ${product.product_price}
+                    for ₹{(product.product_price * 100).toLocaleString("en-IN")}
                   </h4>
                   <motion.div
                     style={{
