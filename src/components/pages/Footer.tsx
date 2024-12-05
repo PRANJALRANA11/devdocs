@@ -5,7 +5,7 @@ function Footer() {
     <footer>
       <div className="footer-container container">
         <div className="content_1">
-          <img src="https://i.postimg.cc/htGyQ4JB/footer-logo.png" alt="logo" />
+          <h1>ShopFusion</h1>
           <p>
             The customer is at the heart of our
             <br />
