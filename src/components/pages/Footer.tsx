@@ -17,8 +17,8 @@ function Footer() {
         </div>
         <div className="content_2">
           <h4>SHOPPING</h4>
-          <a href="#sellers">Clothing Store</a>
-          <a href="#sellers">Trending Shoes</a>
+          <a href="#sellers">Mobile Store</a>
+          <a href="#sellers">Nearby Service Centers</a>
           <a href="#sellers">Accessories</a>
           <a href="#sellers">Sale</a>
         </div>
