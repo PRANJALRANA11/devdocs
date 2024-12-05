@@ -5,7 +5,7 @@ function Footer() {
     <footer>
       <div className="footer-container container">
         <div className="content_1">
-          <h1>ShopFusion</h1>
+          <h1 className="text-white">ShopFusion</h1>
           <p>
             The customer is at the heart of our
             <br />
