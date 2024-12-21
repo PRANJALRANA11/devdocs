@@ -81,7 +81,7 @@ https://github.com/HrushiBorhade/AskDoc/assets/89704093/330fca34-e2e7-4bd2-b495-
 To get started with this project, run
 
 ```bash
-  git clone https://github.com/HrushiBorhade/AskDoc.git
+  git clone 
 ```
 
 Install all the packages
