@@ -1,111 +1,137 @@
-# [Ecommerce](https://github.com/PRANJALRANA11/assignment) 💬📊
+# [AskDoc 🚀](https://askdoc-ai.vercel.app/)
 
-
-This is an ecommerce platform for assignment created with nextjs
-
-## Demo
+> # <p align="center"> Ask Questions and Chat with your Pdf Documents. </p>
 
 
 
 
-https://github.com/user-attachments/assets/844081f0-c745-489d-a139-49b209bba798
 
 
 
-
-### ⇒ *[Try it now! Hosted public environment is live! (Click Here)](assignment-eta-smoky.vercel.app/)* ⇐
-
+https://github.com/HrushiBorhade/AskDoc/assets/89704093/330fca34-e2e7-4bd2-b495-74bcfb50739c
 
 
+
+<img width="1420" alt="Screenshot 2023-10-27 at 7 11 14 PM" src="https://github.com/HrushiBorhade/AskDoc/assets/89704093/a0823b12-7919-43d8-8b82-81c67ebb3126">
+
+## Tech stack
+
+> ### 🛠️ Nextjs 13 | Typescript | tRPC (T3 Stack)
+>
+> ### 🤖 Langchain | Pinecone | OpenAI
+>
+> ### ✦ Postgresql | Prisma
+>
+> ### 👨🏻‍💻 React-query | Zod | UploadThing
 
 ## Features
 
-- [x] Product Listing Page: Display at least 6-10 products using a grid layout; each product card includes: product image, product name, product price (formatted for currency), and an 
-      "Add to Cart" button.
-      
-- [x] Add to Cart Functionality: Clicking the "Add to Cart" button on a product will add the chosen product to a user's virtual shopping cart, update the cart icon, and provide visual               feedback (e.g., animation) confirming the item's addition.
-      
-- [x] Cart Page: A dedicated cart page where users can manage their selected products. The cart page  includes a list of all added products, displaying: product image, product name, product         price, quantity selector (up/down buttons or input field) to adjust the amount of each item, and a "Remove Item" button to delete a specific product from the cart. Additionally, cart          summary section with: subtotal (total cost of all items based on quantity and price), optional discounts (fixed or percentage), total price (including discounts), and an optional              checkout button to  display a successful cart addition message.
-      
-- [x] implemented error handling for scenarios like invalid quantity input or discount codes
-      
-- [x] user authentication for persistent cart storage across sessions
-      
-- [x] Backend in nextjs for storing cart data in mongodb
+> ### ✨ End-to-End type safety , scalable and Modular Code
+>
+> ### ✨ Context aware ai response with semantic query/search.
+>
+> ### ✨ Intuitive Drag n Drop uploads
+>
+> ### ✨ Infinite querying for message fetching
+>
+> ### ✨ Real time message streaming & Optimistic updates
+>
+> ### ✨ Interactive and functional PDF viewer
+>
+> ### ✨ Feedback error and success toast notifications
 
-- [x] Dark mode for users
+> # <p >Get Started🔥.</p>
 
+### <p align="center"><img width="1357" alt="thumbnail2" src="https://github.com/HrushiBorhade/AskDoc/assets/89704093/3315f52e-614b-4872-9485-08ad06ea531a"></p>
 
-## Architecture
-Step 1 -:  Initial request to product page 
-(1) -> The user creates request to product page
-(2) -> the products being fetched from rapid api
-(3) -> Product added to cart by that user in any session get's fetched from mongodb
-(4) -> cart product being added to localstorage for persisentcy across pages
-![image](https://github.com/user-attachments/assets/db5d02a1-ed26-47e4-b57b-1b0235bddd38)
+## Semantic Querying
 
-Step 2 -: Add or Remove product from any page
-(1) -> user add/remove product on any page
-(2) -> user cart updated in mongodb
-(3) -> user cart updated in localstorage
-![image](https://github.com/user-attachments/assets/4eddd7e7-34da-4292-b2fb-712d10396acd)
+> ### Some ai magic✨ with langchain , pinecone and OpenAI
 
-Step 3 -> just go to cart page and get checked out 
+![semantic_query](https://github.com/HrushiBorhade/AskDoc/assets/89704093/c28e19a2-ebb6-4a8d-8238-e642b3c149d1)
 
+> # Architechtural and Code Overview👨🏻‍💻
 
+### Authentication-Flow
 
+![auth-flow](https://github.com/HrushiBorhade/AskDoc/assets/89704093/3ee0fa13-3ab3-4073-907e-9df700c63ad4)
 
+### Dashboard
 
-## Challenges we ran into
+![dashboard](https://github.com/HrushiBorhade/AskDoc/assets/89704093/c9baa9a2-50be-479d-b437-c367f2eb15a2)
 
-- Faced difficulty while implimenting redux with nextjs as for different pages it can't persist the data so i used local storage for that although i find a package to do this later on.
-- Site was loading very slowly in lighthouse it was giving 65 score to performance so i have improved it by using dynamic routing in nextjs although i also find out that because i am using      framer motion in many places that also results in this but i find a lazy package to handle these animation loading
+### File Upload
 
-## Improvements
-- For now i am using very simple approach for retrieving user cart data like i fetch the cart of user from mongo with email but i think i can optimize this by creating a seperate collection    for user and there can provide a cart with aggregations which is much more optimized way of doing it.
-- Making a dynamic search for products .
+![file-upload](https://github.com/HrushiBorhade/AskDoc/assets/89704093/a7f85c61-4697-4df2-8103-558dd69ddf47)
 
-## Quickstart
+### Document Page View
 
-To install locally.
+![document-view](https://github.com/HrushiBorhade/AskDoc/assets/89704093/8f6270e3-5489-414b-be56-9fcf184a7b7d)
 
-### 1. Clone the repository
+### Infinite Message Querying
+
+![infinite-query](https://github.com/HrushiBorhade/AskDoc/assets/89704093/66520f28-1ed9-442a-9d68-411bcce32352)
+
+### Optimistic Updates & Real-time Message Streaming
+
+![message-streaming   Optimistic-updates](https://github.com/HrushiBorhade/AskDoc/assets/89704093/08cf9e0c-fb92-4152-8364-b7823c0ab993)
+
+## Instructions
+
+To get started with this project, run
+
 ```bash
-git clone https://github.com/PRANJALRANA11/assignment
+  git clone https://github.com/HrushiBorhade/AskDoc.git
 ```
-###  2. Create a branch
-```bash
-git checkout -b temp
+
+Install all the packages
+
 ```
-### 3. copy the .env.example to .env
-```bash
-cp .env.example .env
-```
-### 4. install the dependancies
-```bash
 npm install
 ```
 
-### 5. Run server and access localhost:5172 
+create .env file with these variables:
+
 ```bash
-npm run dev
+
+#PRISMA
+DATABASE_URL=
+DIRECT_DATABASE_URL=
+
+#AWS S3
+NEXT_PUBLIC_S3_ACCESS_KEY_ID=AKIAWCYYAIYWV57YM7UL
+NEXT_PUBLIC_S3_SECRET_ACCESS_KEY=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
+NEXT_PUBLIC_S3_BUCKET_NAME=devdock
+
+#UPLOADTHING
+UPLOADTHING_SECRET=
+UPLOADTHING_APP_ID=
+
+#PINECONE
+PINECONE_API_KEY=
+
+
+#OPENAI
+OPENAI_API_KEY=
+
+#STRIPE
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
+#KINDE
+KINDE_CLIENT_ID=
+KINDE_CLIENT_SECRET=
+KINDE_ISSUER_URL=
+KINDE_SITE_URL=
+KINDE_POST_LOGOUT_REDIRECT_URL=
+KINDE_POST_LOGIN_REDIRECT_URL=
+
+#CLOUDINARY
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 ```
 
+Run the app
 
-
-### Technologies used in the project:
-
-  Nextjs
-  Redux
-  Mongodb
-  Typescript
-  Shadcn ui
-  Aceternity ui
-
-### 🛡️ License
-
-This project is licensed under the MIT
-
-
-
-
+```
+ `npm run dev`
+```

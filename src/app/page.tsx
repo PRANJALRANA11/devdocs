@@ -1,36 +1,74 @@
-"use client";
-import React from "react";
-import { Vortex } from "@/components/ui/vortex";
-import { Button } from "@/components/ui/button";
-import {
-  RegisterLink,
-  LoginLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 
-export default function Home() {
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import signup from "../../public/document.svg";
+import Product from "@/components/Product";
+import Pricing from "@/components/Pricing";
+import Footer from "@/components/Footer";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import ProductPage from "@/components/pages/ProductPage";
+import Scroll from "@/components/Scroll";
+import ProductDemo from "@/components/ProductDemo";
+import "next-cloudinary/dist/cld-video-player.css";
+import { Suspense } from "react";
+import ProductDemoContainer from "@/components/ProductDemoContainer";
+import Navbar from "@/components/Navbar";
+
+type Props = {};
+
+function HomePage({}: Props) {
+  const { getUser } = getKindeServerSession();
+  const user = getUser();
+  const isAuth = !!user;
+
+  // useEffect(() => {
+  //   (async () => {
+  //     // @ts-ignore
+  //     const LocomotiveScroll = (await import("locomotive-scroll")).default;
+  //     const locomotiveScroll = new LocomotiveScroll({
+  //       smooth: true,
+  //     });
+  //   })();
+  // }, []);
   return (
-    <div className="w-full mx-auto rounded-md h-[100vh] overflow-hidden">
-      <Vortex backgroundColor="black" className="flex items-center flex-col justify-center px-2 md:px-10 py-4 w-full h-full">
-        <h2 className="text-white text-2xl md:text-6xl font-bold text-center">
-          Welcome to our ShopFusion
-        </h2>
-        <p className="text-white text-sm md:text-2xl max-w-xl mt-6 text-center">
-          here you can find the best products at the best prices and the best
-          quality in the market
-        </p>
-        <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
-          <LoginLink>
-            {" "}
-            <button className="px-4 py-2 bg-white hover:bg-gray-300 transition duration-200 rounded-lg text-black shadow-[0px_2px_0px_0px_#FFFFFF40_inset]">Sign in</button>
-          </LoginLink>
-          <RegisterLink>
-            {" "}
-            <button className="px-4 py-2  text-white ">
-              Sign up
-            </button>
-          </RegisterLink>
-        </div>
-      </Vortex>
+    <div
+      className="font-sans  "
+      // className="bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-gray-700 via-gray-900 to-black"
+    >
+      <Navbar />
+      <div className=" h-[100svh] grainy ">
+        <MaxWidthWrapper className="container flex flex-col  items-center justify-center text-center ">
+          <div className="animate-fade-in  [--animation-delay:600ms] opacity-0 translaye-y-[20px] ">
+            <div className=" text-center  mt-[80px] tracking-tight font-syne heading-styles  text-5xl sm:text-5xl md:text-6xl lg:text-[72px] z-0  relative  text-gradient  ">
+              Ask Questions &<br /> Chat with your Documents.
+            </div>
+            {/* <Link
+            href="/dashboard"
+            className={cn(
+              "navmenu-styles",
+              "py-3 px-8 mt-4 font-medium font-syne text-lg rounded-xl "
+            )}
+          >
+            Get Started
+          </Link> */}
+            <p className="text-lg mt-4 font-poppins tracking-tight subtext-gradient">
+              Conversation with your Documents{" "}
+              <br className="block md:hidden" />
+              have never been easier
+            </p>
+            <ProductDemoContainer />
+          </div>
+        </MaxWidthWrapper>
+      </div>
+      <Scroll />
+      <ProductPage />
+      <Pricing isAuth={isAuth} />
+      <Footer />
     </div>
   );
 }
+
+export default HomePage;
