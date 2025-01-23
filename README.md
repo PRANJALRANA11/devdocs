@@ -8,7 +8,7 @@
 
 
 
-https://github.com/HrushiBorhade/AskDoc/assets/89704093/330fca34-e2e7-4bd2-b495-74bcfb50739c
+
 
 
 
@@ -68,13 +68,6 @@ https://github.com/HrushiBorhade/AskDoc/assets/89704093/330fca34-e2e7-4bd2-b495-
 
 ![document-view](https://github.com/HrushiBorhade/AskDoc/assets/89704093/8f6270e3-5489-414b-be56-9fcf184a7b7d)
 
-### Infinite Message Querying
-
-![infinite-query](https://github.com/HrushiBorhade/AskDoc/assets/89704093/66520f28-1ed9-442a-9d68-411bcce32352)
-
-### Optimistic Updates & Real-time Message Streaming
-
-![message-streaming   Optimistic-updates](https://github.com/HrushiBorhade/AskDoc/assets/89704093/08cf9e0c-fb92-4152-8364-b7823c0ab993)
 
 ## Instructions
 
